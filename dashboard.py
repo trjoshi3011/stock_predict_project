@@ -70,7 +70,6 @@ if has_model:
     try:
         artifact = joblib.load("model.joblib")
         model = artifact["model"]
-        scaler = artifact.get("scaler")
         decision_threshold = artifact.get("decision_threshold", 0.5)
         feature_cols = artifact["feature_cols"]
         df = pd.read_csv("processed_data.csv", index_col=0, parse_dates=True)
@@ -80,8 +79,7 @@ if has_model:
 
     X = df[feature_cols]
     y = df["Target (Binary Classification)"]
-    X_scaled = scaler.transform(X) if scaler is not None else X
-    proba = model.predict_proba(X_scaled)[:, 1]
+    proba = model.predict_proba(X)[:, 1]
     predictions = (proba > decision_threshold).astype(int)
     df = df.copy()
     df["pred"] = predictions
@@ -179,7 +177,7 @@ fig.update_layout(
     showlegend=bool(has_model and price_df["pred"].sum() > 0),
 )
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width = "stretch")
 
 # Metrics dashboard
 st.markdown('<p class="section">Metrics Dashboard</p>', unsafe_allow_html=True)
@@ -193,8 +191,7 @@ if has_model:
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.2, random_state=42
         )
-    X_test_scaled = scaler.transform(X_test) if scaler is not None else X_test
-    proba_test = model.predict_proba(X_test_scaled)[:, 1]
+    proba_test = model.predict_proba(X_test)[:, 1]
     y_pred = (proba_test > decision_threshold).astype(int)
     accuracy = accuracy_score(y_test, y_pred)
 

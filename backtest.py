@@ -3,10 +3,9 @@
 import joblib
 import pandas as pd
 
-# Load the trained model, scaler (if any), threshold, and feature list
+# Load the trained model, threshold, and feature list
 artifact = joblib.load("model.joblib")
 model = artifact["model"]
-scaler = artifact.get("scaler")
 decision_threshold = artifact.get("decision_threshold", 0.5)
 feature_cols = artifact["feature_cols"]
 
@@ -25,9 +24,8 @@ else:
         X, y, test_size=0.2, random_state=42
     )
 
-# Predict on test set (scale features; use probability threshold if saved)
-X_test_scaled = scaler.transform(X_test) if scaler is not None else X_test
-proba = model.predict_proba(X_test_scaled)[:, 1]
+# Predict on test set (use probability threshold if saved)
+proba = model.predict_proba(X_test)[:, 1]
 predictions = (proba > decision_threshold).astype(int)
 test_df = df.loc[X_test.index].copy()
 test_df["pred"] = predictions

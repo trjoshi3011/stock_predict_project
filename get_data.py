@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 # Date range: 2 years ago to today
 end_date = datetime.now()
-start_date = end_date - timedelta(days=2 * 365)
+start_date = end_date - timedelta(days=5 * 365)
 
 # Download Apple (AAPL) and save to CSV
 aapl = yf.download("AAPL", start=start_date, end=end_date, progress=False)
