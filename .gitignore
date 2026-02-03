@@ -1,4 +1,6 @@
-venv/
 venv_new/
 __pycache__/
-*.csv
+apple_stock_data.csv
+SPY_data.csv
+processed_data.csv
+model.joblib
